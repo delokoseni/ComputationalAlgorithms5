@@ -44,7 +44,7 @@ int main()
     switch (Choise)
     {
     case 1:
-        std::cout << "Введите количество сумм: ";
+        std::cout << "Введите число разбиений: ";
         std::cin >> NumberOfAmounts;
 
         std::cout << "Результат, полученный методом средних прямоугольников: ";
@@ -53,24 +53,26 @@ int main()
         std::cout << TrapezoidMethod(BeginOfIntegration, EndOfIntegration, NumberOfAmounts, Function);
         std::cout << "\nРезультат, полученный методом Симпсона: ";
         std::cout << SimpsonMethod(BeginOfIntegration, EndOfIntegration, NumberOfAmounts, Function);
-
         break;
     case 2:
         std::cout << "Введите погрешность: ";
         std::cin >> Epsilon;
 
+        double Result;
+        Result = MiddleRectangleMethodWA(BeginOfIntegration, EndOfIntegration, Epsilon, Function);
         std::cout << "Результат, полученный методом средних прямоугольников: ";
-        std::cout << MiddleRectangleMethodWA(BeginOfIntegration, EndOfIntegration, Epsilon, Function);
-        std::cout << "\nРезультат, полученный методом трапеции: ";
-        std::cout << TrapezoidMethodWA(BeginOfIntegration, EndOfIntegration, Epsilon, Function);
-        std::cout << "\nРезультат, полученный методом Симпсона: ";
-        std::cout << SimpsonMethodWA(BeginOfIntegration, EndOfIntegration, Epsilon, Function);
+        std::cout << Result << std::endl << std::endl;
+        Result = TrapezoidMethodWA(BeginOfIntegration, EndOfIntegration, Epsilon, Function);
+        std::cout << "Результат, полученный методом трапеции: ";
+        std::cout << Result << std::endl << std::endl;
+        Result = SimpsonMethodWA(BeginOfIntegration, EndOfIntegration, Epsilon, Function);
+        std::cout << "Результат, полученный методом Симпсона: ";
+        std::cout << Result;
         break;
     default:
         std::cout << "Режим не был выбран." << std::endl;
         break;
     }
-
     return 0;
 }
 
@@ -113,10 +115,25 @@ double TrapezoidMethod(double BeginOfIntegration, double EndOfIntegration, int N
         Result += 2 * GetFunctionValue(BeginOfIntegration + i * H, Function);
     return H/2 * Result;
 }
+
 //Метод трапеции с автоматическим выбором шага интегрирования
 double TrapezoidMethodWA(double BeginOfIntegration, double EndOfIntegration, double Epsilon, std::string Function)
 {
-    return 0.0;
+    int NumberOfAmounts = 1; //Количество шагов интегрирования
+    int Count = 0; //Счётчик количества шагов интегрирования
+    double Result = 0.0;
+    double Error = 1.0; //Погрешность
+    while (Error > Epsilon)
+    {
+        double OldResult = Result;
+        Result = TrapezoidMethod(BeginOfIntegration, EndOfIntegration, NumberOfAmounts, Function);
+        Error = fabs(Result - OldResult);
+        NumberOfAmounts *= 2;
+        Count++;
+    }
+    std::cout << "Количество шагов интегрирования: " << Count - 1 << std::endl;
+    std::cout << "Итоговое число разбиений: " << NumberOfAmounts / 2 << std::endl;
+    return Result;
 }
 
 //Метод Симпсона с постоянным шагом интегрирования
@@ -139,7 +156,21 @@ double SimpsonMethod(double BeginOfIntegration, double EndOfIntegration, int Num
 //Метод Симпсона с автоматическим выбором шага интегрирования
 double SimpsonMethodWA(double BeginOfIntegration, double EndOfIntegration, double Epsilon, std::string Function)
 {
-    return 0.0;
+    int NumberOfAmounts = 2; //Количество шагов интегрирования
+    int Count = 0; //Счётчик количества шагов интегрирования
+    double Result = 0.0;
+    double Error = 1.0; //Погрешность
+    while (Error > Epsilon)
+    {
+        double OldResult = Result;
+        Result = SimpsonMethod(BeginOfIntegration, EndOfIntegration, NumberOfAmounts, Function);
+        Error = fabs(Result - OldResult);
+        NumberOfAmounts *= 2;
+        Count++;
+    }
+    std::cout << "Количество шагов интегрирования: " << Count - 1 << std::endl;
+    std::cout << "Итоговое число разбиений: " << NumberOfAmounts / 2 << std::endl;
+    return Result;
 }
 
 //Получает таблицу по введенной в аналитическом виде функции
