@@ -37,7 +37,7 @@ int main()
     std::cout << "Введите функцию: ";
     std::cin >> Function;
 
-    double  NumberOfAmounts; //Только для первого режима
+    double NumberOfSplits; //Только для первого режима
 
     double Epsilon; //Только для второго режима
 
@@ -45,14 +45,14 @@ int main()
     {
     case 1:
         std::cout << "Введите число разбиений: ";
-        std::cin >> NumberOfAmounts;
+        std::cin >> NumberOfSplits;
 
         std::cout << "Результат, полученный методом средних прямоугольников: ";
-        std::cout << MiddleRectangleMethod(BeginOfIntegration, EndOfIntegration, NumberOfAmounts, Function);
+        std::cout << MiddleRectangleMethod(BeginOfIntegration, EndOfIntegration, NumberOfSplits, Function);
         std::cout << "\nРезультат, полученный методом трапеции: ";
-        std::cout << TrapezoidMethod(BeginOfIntegration, EndOfIntegration, NumberOfAmounts, Function);
+        std::cout << TrapezoidMethod(BeginOfIntegration, EndOfIntegration, NumberOfSplits, Function);
         std::cout << "\nРезультат, полученный методом Симпсона: ";
-        std::cout << SimpsonMethod(BeginOfIntegration, EndOfIntegration, NumberOfAmounts, Function);
+        std::cout << SimpsonMethod(BeginOfIntegration, EndOfIntegration, NumberOfSplits, Function);
         break;
     case 2:
         std::cout << "Введите погрешность: ";
@@ -77,75 +77,75 @@ int main()
 }
 
 //Метод левых прямоугольников с постоянным шагом интегрирования
-double MiddleRectangleMethod(double BeginOfIntegration, double EndOfIntegration, int NumberOfAmounts, std::string Function)
+double MiddleRectangleMethod(double BeginOfIntegration, double EndOfIntegration, int NumberOfSplits, std::string Function)
 {
-    double H = (EndOfIntegration - BeginOfIntegration) / NumberOfAmounts; //Шаг разбиения = (b - a) / n
+    double H = (EndOfIntegration - BeginOfIntegration) / NumberOfSplits; //Шаг разбиения = (b - a) / n
     double Result = 0.0;
-    for (int i = 0; i < NumberOfAmounts; i++)
-        Result += H * GetFunctionValue(BeginOfIntegration + i * H + H/2, Function);
+    for (int i = 0; i < NumberOfSplits; i++)
+        Result += H * GetFunctionValue(BeginOfIntegration + i * H + H / 2, Function);
     return Result;
 }
 
 //Метод левых прямоугольников с автоматическим выбором шага интегрирования
 double MiddleRectangleMethodWA(double BeginOfIntegration, double EndOfIntegration, double Epsilon, std::string Function)
 {
-    int NumberOfAmounts = 1; //Количество шагов интегрирования
+    int NumberOfSplits = 1; //Число разбиений
     int Count = 0; //Счётчик количества шагов интегрирования
     double Result = 0.0;
     double Error = 1.0; //Погрешность
     while (Error > Epsilon)
     {
         double OldResult = Result;
-        Result = MiddleRectangleMethod(BeginOfIntegration, EndOfIntegration, NumberOfAmounts, Function);
+        Result = MiddleRectangleMethod(BeginOfIntegration, EndOfIntegration, NumberOfSplits, Function);
         Error = fabs(Result - OldResult);
-        NumberOfAmounts *= 2;
+        NumberOfSplits *= 2;
         Count++;
     }
     std::cout << "Количество шагов интегрирования: " << Count - 1 << std::endl;
-    std::cout << "Итоговое число разбиений: " << NumberOfAmounts / 2 << std::endl;
+    std::cout << "Итоговое число разбиений: " << NumberOfSplits / 2 << std::endl;
     return Result;
 }
 
 //Метод трапеции с постоянным шагом интегрирования
-double TrapezoidMethod(double BeginOfIntegration, double EndOfIntegration, int NumberOfAmounts, std::string Function)
+double TrapezoidMethod(double BeginOfIntegration, double EndOfIntegration, int NumberOfSplits, std::string Function)
 {
-    double H = (EndOfIntegration - BeginOfIntegration) / NumberOfAmounts; //Шаг разбиения = (b - a) / n
+    double H = (EndOfIntegration - BeginOfIntegration) / NumberOfSplits; //Шаг разбиения = (b - a) / n
     double Result = GetFunctionValue(BeginOfIntegration, Function) + GetFunctionValue(EndOfIntegration, Function); //f(a) + f(b)
-    for (int i = 1; i < NumberOfAmounts - 1; i++)
+    for (int i = 1; i < NumberOfSplits - 1; i++)
         Result += 2 * GetFunctionValue(BeginOfIntegration + i * H, Function);
-    return H/2 * Result;
+    return H / 2 * Result;
 }
 
 //Метод трапеции с автоматическим выбором шага интегрирования
 double TrapezoidMethodWA(double BeginOfIntegration, double EndOfIntegration, double Epsilon, std::string Function)
 {
-    int NumberOfAmounts = 1; //Количество шагов интегрирования
+    int NumberOfSplits = 1; //Число разбиений
     int Count = 0; //Счётчик количества шагов интегрирования
     double Result = 0.0;
     double Error = 1.0; //Погрешность
     while (Error > Epsilon)
     {
         double OldResult = Result;
-        Result = TrapezoidMethod(BeginOfIntegration, EndOfIntegration, NumberOfAmounts, Function);
+        Result = TrapezoidMethod(BeginOfIntegration, EndOfIntegration, NumberOfSplits, Function);
         Error = fabs(Result - OldResult);
-        NumberOfAmounts *= 2;
+        NumberOfSplits *= 2;
         Count++;
     }
     std::cout << "Количество шагов интегрирования: " << Count - 1 << std::endl;
-    std::cout << "Итоговое число разбиений: " << NumberOfAmounts / 2 << std::endl;
+    std::cout << "Итоговое число разбиений: " << NumberOfSplits / 2 << std::endl;
     return Result;
 }
 
 //Метод Симпсона с постоянным шагом интегрирования
-double SimpsonMethod(double BeginOfIntegration, double EndOfIntegration, int NumberOfAmounts, std::string Function)
+double SimpsonMethod(double BeginOfIntegration, double EndOfIntegration, int NumberOfSplits, std::string Function)
 {
-    if (NumberOfAmounts % 2 == 1)
-        NumberOfAmounts += 1; //Чтобы при подсчете не "потерять" последнюю точку
-    double H = (EndOfIntegration - BeginOfIntegration) / NumberOfAmounts; //Шаг разбиения = (b - a) / n
+    if (NumberOfSplits % 2 == 1)
+        NumberOfSplits += 1; //Чтобы при подсчете не "потерять" последнюю точку
+    double H = (EndOfIntegration - BeginOfIntegration) / NumberOfSplits; //Шаг разбиения = (b - a) / n
     double Result = GetFunctionValue(BeginOfIntegration, Function); //f(x[i-1])
     Result += 4 * GetFunctionValue(BeginOfIntegration + H, Function); //f(x[i-1]) + 4f(x[i])
     Result += GetFunctionValue(EndOfIntegration, Function); //f(x[i-1]) + 4f(x[i]) + f(x[i+1])
-    for (int i = 1; i < NumberOfAmounts / 2; i++)
+    for (int i = 1; i < NumberOfSplits / 2; i++)
     {
         Result += 4 * GetFunctionValue(BeginOfIntegration + (2 * i + 1) * H, Function); //Нечётные
         Result += 2 * GetFunctionValue(BeginOfIntegration + 2 * i * H, Function); //Чётные
@@ -156,24 +156,24 @@ double SimpsonMethod(double BeginOfIntegration, double EndOfIntegration, int Num
 //Метод Симпсона с автоматическим выбором шага интегрирования
 double SimpsonMethodWA(double BeginOfIntegration, double EndOfIntegration, double Epsilon, std::string Function)
 {
-    int NumberOfAmounts = 2; //Количество шагов интегрирования
+    int NumberOfSplits = 2; //Число разбиений, = 2 чтобы при подсчете не "потерять" последнюю точку
     int Count = 0; //Счётчик количества шагов интегрирования
     double Result = 0.0;
     double Error = 1.0; //Погрешность
     while (Error > Epsilon)
     {
         double OldResult = Result;
-        Result = SimpsonMethod(BeginOfIntegration, EndOfIntegration, NumberOfAmounts, Function);
+        Result = SimpsonMethod(BeginOfIntegration, EndOfIntegration, NumberOfSplits, Function);
         Error = fabs(Result - OldResult);
-        NumberOfAmounts *= 2;
+        NumberOfSplits *= 2;
         Count++;
     }
     std::cout << "Количество шагов интегрирования: " << Count - 1 << std::endl;
-    std::cout << "Итоговое число разбиений: " << NumberOfAmounts / 2 << std::endl;
+    std::cout << "Итоговое число разбиений: " << NumberOfSplits / 2 << std::endl;
     return Result;
 }
 
-//Получает таблицу по введенной в аналитическом виде функции
+//Получает значение введенной в аналитическом виде функции
 double GetFunctionValue(double Argument, std::string Function)
 {
     exprtk::symbol_table<double> SymbolTable;
