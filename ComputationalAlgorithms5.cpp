@@ -35,7 +35,7 @@ int main()
     std::cout << "\nРезультат, полученный методом трапеции: ";
     std::cout << TrapezoidMethod(BeginOfIntegration, EndOfIntegration, NumberOfAmounts, Function);
     std::cout << "\nРезультат, полученный методом Симпсона: ";
-
+    std::cout << SimpsonMethod(BeginOfIntegration, EndOfIntegration, NumberOfAmounts, Function);
     return 0;
 }
 
@@ -49,15 +49,14 @@ double MiddleRectangleMethod(double BeginOfIntegration, double EndOfIntegration,
     return Result;
 }
 
-//Метод трапеции //Незначительно не сходится с Никитой!!!
+//Метод трапеции
 double TrapezoidMethod(double BeginOfIntegration, double EndOfIntegration, int NumberOfAmounts, std::string Function)
 {
     double H = (EndOfIntegration - BeginOfIntegration) / NumberOfAmounts; // Шаг разбиения = (b - a) / n
     double Result = GetFunctionValue(BeginOfIntegration, Function) + GetFunctionValue(EndOfIntegration, Function); //f(a) + f(b)
-    Result /= 2.0; //(f(a) + f(b)) / 2
-    for (int i = 0; i < NumberOfAmounts - 1; i++)
-        Result += GetFunctionValue(BeginOfIntegration + i * H, Function);
-    return H * Result;
+    for (int i = 1; i < NumberOfAmounts - 1; i++)
+        Result += 2 * GetFunctionValue(BeginOfIntegration + i * H, Function);
+    return H/2 * Result;
 }
 
 //Метод Симпсона
@@ -66,10 +65,14 @@ double SimpsonMethod(double BeginOfIntegration, double EndOfIntegration, int Num
     if (NumberOfAmounts % 2 == 1)
         NumberOfAmounts += 1; //Чтобы при подсчете не "потерять" последнюю точку
     double H = (EndOfIntegration - BeginOfIntegration) / NumberOfAmounts; // Шаг разбиения = (b - a) / n
-    double Result = GetFunctionValue(BeginOfIntegration, Function);
-    Result += 4 * GetFunctionValue(BeginOfIntegration + H, Function);
+    double Result = GetFunctionValue(BeginOfIntegration, Function); //f(x[i-1])
+    Result += 4 * GetFunctionValue(BeginOfIntegration + H, Function); //f(x[i-1]) + 4f(x[i])
     Result += GetFunctionValue(EndOfIntegration, Function); //f(x[i-1]) + 4f(x[i]) + f(x[i+1])
-
+    for (int i = 1; i < NumberOfAmounts / 2; i++)
+    {
+        Result += 4 * GetFunctionValue(BeginOfIntegration + (2 * i + 1) * H, Function); //Нечётные
+        Result += 2 * GetFunctionValue(BeginOfIntegration + 2 * i * H, Function); //Чётные
+    }
     return H / 3 * Result;
 }
 
