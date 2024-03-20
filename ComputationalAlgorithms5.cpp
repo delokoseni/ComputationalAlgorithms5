@@ -89,10 +89,10 @@ double MiddleRectangleMethod(double BeginOfIntegration, double EndOfIntegration,
 //Метод левых прямоугольников с автоматическим выбором шага интегрирования
 double MiddleRectangleMethodWA(double BeginOfIntegration, double EndOfIntegration, double Epsilon, std::string Function)
 {
-    int NumberOfSplits = 1; //Число разбиений
+    int NumberOfSplits = 2; //Число разбиений
     int Count = 0; //Счётчик количества шагов интегрирования
     double Result = 0.0;
-    double Error = 1.0; //Погрешность
+    double Error = 1.0 + Epsilon; //Погрешность
     while (Error > Epsilon)
     {
         double OldResult = Result;
@@ -102,7 +102,7 @@ double MiddleRectangleMethodWA(double BeginOfIntegration, double EndOfIntegratio
         Count++;
     }
     std::cout << "Количество шагов интегрирования: " << Count - 1 << std::endl;
-    std::cout << "Итоговое число разбиений: " << NumberOfSplits / 2 << std::endl;
+    std::cout << "Итоговое число разбиений: " << NumberOfSplits / 4 << std::endl;
     return Result;
 }
 
@@ -111,7 +111,7 @@ double TrapezoidMethod(double BeginOfIntegration, double EndOfIntegration, int N
 {
     double H = (EndOfIntegration - BeginOfIntegration) / NumberOfSplits; //Шаг разбиения = (b - a) / n
     double Result = GetFunctionValue(BeginOfIntegration, Function) + GetFunctionValue(EndOfIntegration, Function); //f(a) + f(b)
-    for (int i = 1; i < NumberOfSplits - 1; i++)
+    for (int i = 1; i < NumberOfSplits; i++)
         Result += 2 * GetFunctionValue(BeginOfIntegration + i * H, Function);
     return H / 2 * Result;
 }
@@ -119,7 +119,7 @@ double TrapezoidMethod(double BeginOfIntegration, double EndOfIntegration, int N
 //Метод трапеции с автоматическим выбором шага интегрирования
 double TrapezoidMethodWA(double BeginOfIntegration, double EndOfIntegration, double Epsilon, std::string Function)
 {
-    int NumberOfSplits = 1; //Число разбиений
+    int NumberOfSplits = 2; //Число разбиений
     int Count = 0; //Счётчик количества шагов интегрирования
     double Result = 0.0;
     double Error = 1.0; //Погрешность
@@ -132,7 +132,7 @@ double TrapezoidMethodWA(double BeginOfIntegration, double EndOfIntegration, dou
         Count++;
     }
     std::cout << "Количество шагов интегрирования: " << Count - 1 << std::endl;
-    std::cout << "Итоговое число разбиений: " << NumberOfSplits / 2 << std::endl;
+    std::cout << "Итоговое число разбиений: " << NumberOfSplits / 4 << std::endl;
     return Result;
 }
 
@@ -169,7 +169,7 @@ double SimpsonMethodWA(double BeginOfIntegration, double EndOfIntegration, doubl
         Count++;
     }
     std::cout << "Количество шагов интегрирования: " << Count - 1 << std::endl;
-    std::cout << "Итоговое число разбиений: " << NumberOfSplits / 2 << std::endl;
+    std::cout << "Итоговое число разбиений: " << NumberOfSplits / 4 << std::endl;
     return Result;
 }
 
